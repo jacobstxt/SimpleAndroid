@@ -1,6 +1,8 @@
 using JustDoItApi.Data;
+using JustDoItApi.Entities.Identity;
 using JustDoItApi.Interfaces;
 using JustDoItApi.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 
@@ -14,8 +16,23 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddSwaggerGen();
 
+
+builder.Services
+    .AddIdentity<UserEntity, RoleEntity>(options =>
+    {
+        options.Password.RequiredLength = 6;
+        options.Password.RequireDigit = false;
+        options.Password.RequireLowercase = false;
+        options.Password.RequireUppercase = false;
+        options.Password.RequireNonAlphanumeric = false;
+    })
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
+
 builder.Services.AddScoped<IZadachiService, ZadachiService>();
 builder.Services.AddScoped<IImageService, ImageService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IJWTTokenService, JWTTokenService>();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
@@ -33,9 +50,12 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.UseAuthorization();
 
-app.MapControllers();
+
+app.UseAuthorization();
+app.UseAuthentication();
+
+
 
 var dir = builder.Configuration["ImagesDir"];
 string path = Path.Combine(Directory.GetCurrentDirectory(), dir);
@@ -49,8 +69,6 @@ app.UseStaticFiles(new StaticFileOptions
 
 app.UseSwagger();
 app.UseSwaggerUI();
-
-app.UseAuthorization();
 
 app.MapControllers();
 
