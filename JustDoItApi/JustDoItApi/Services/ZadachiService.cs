@@ -79,7 +79,4 @@ public class ZadachiService(AppDbContext context, IMapper mapper, IImageService 
         await context.SaveChangesAsync();
         return true;
     }
-
-
-
 }

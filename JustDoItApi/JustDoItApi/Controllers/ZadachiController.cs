@@ -1,7 +1,6 @@
 using JustDoItApi.Interfaces;
 using JustDoItApi.Models.Zadachi;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace JustDoItApi.Controllers;
 
@@ -13,6 +12,7 @@ public class ZadachiController(IZadachiService zadachiService) : ControllerBase
     [HttpGet()]
     public async Task<IActionResult> Get()
     {
+        Thread.Sleep(2000);
         var items = await zadachiService.GetAllAsync();
 
         return Ok(items);
@@ -24,7 +24,6 @@ public class ZadachiController(IZadachiService zadachiService) : ControllerBase
         var res = await zadachiService.CreateZadachyAsync(model);
         return Ok(res);
     }
-
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(long id)
@@ -58,5 +57,4 @@ public class ZadachiController(IZadachiService zadachiService) : ControllerBase
         }
         return Ok();
     }
-
 }

@@ -28,7 +28,7 @@ public class AuthController(IAuthService authService) : ControllerBase
             {
                 Status = 400,
                 IsValid = false,
-                Errors = new { Email = "Щось пішло не так" }
+                Errors = new { Email = "Щось пішло не так " }
             });
         }
         return Ok(new
